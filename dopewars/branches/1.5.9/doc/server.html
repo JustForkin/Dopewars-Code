@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>Setting up and running a dopewars server</title>
+</head>
+
+<body>
+<h1>Setting up and running a dopewars server</h1>
+
+<p>Multiplayer games of dopewars require a running dopewars server; this
+mediates the interactions between each player (each player runs a
+<a href="clientplay.html">client</a> which connects to this server). The server
+runs the game, generating drug prices and the like, and instructs the clients
+accordingly. The server can be run on any machine that can be reached over
+the network by clients (so you don't have to run it on the same machine that
+you run your client on, for example, unless your firewall blocks the dopewars
+port).</p>
+
+<p>Single player games do not require a server (although you can still connect
+to one if you like) as a "virtual server" is run by the dopewars client.</p>
+
+<p>The dopewars server can be heavily customised by means of the
+<a href="configfile.html">configuration files</a>. For example, you can
+change the names of all the game locations so that the game is set in your
+home city rather than New York. Any players that then connect to your
+customised server will play this customised game.</p>
+
+<ul>
+<li><a href="#server">Running a server</a></li>
+<li><a href="#interact">Interacting with the text-mode server</a></li>
+<li><a href="#ntservice">Running as an NT service</a></li>
+<li><a href="#metaserver">Private and public: the dopewars metaserver</a></li>
+</ul>
+
+<h2><a id="server">Running a server</a></h2>
+
+<p>All the code for the dopewars server is included in the same binary as the
+standard client. To run the binary in server mode, specify the <b>-s</b> or
+<b>-S</b> <a href="commandline.html">command line option</a>. The type of
+server that runs depends on how you configured the binary; by default, on
+Windows systems a simple graphical window containing the server output and
+a line for entering <a href="servercommands.html">server commands</a> is used
+(an "interactive" server) while on Unix systems a text-mode server that
+accepts no input ("noninteractive") is used.</p>
+
+<h2><a id="interact">Interacting with the text-mode server</a></h2>
+
+<p>Once started, the text-mode server does not accept commands directly. This
+is problematic if you want to adjust settings, eject players, etc. To send
+commands to a running server, run dopewars with the <b>-A</b>
+<a href="commandline.html">command line option</a>. (This should only work
+from the machine running the dopewars server, not over the network, and only
+for the user that started the server, as it uses a Unix-domain socket for the
+communication.) Also, by default the text-mode server sends its log output to
+standard output; you may wish to instead log to a file with the <b>-l</b>
+option.</p>
+
+<h2><a id="ntservice">Running as an NT service</a></h2>
+
+<p>On Windows systems, the graphical server has one major drawback; it can
+only run while you are logged on. As soon as you log out, the server is
+killed. To get around this limitation, dopewars supports being run as an
+"NT Service" under Windows NT and later systems (e.g. 2000, XP). The install
+program should set up the service; users with suitable access rights can then
+start or stop the service via the Control Panel. The disadvantage of the
+server in this configuration is that server commands cannot be issued once
+the server is running. This limitation should be fixed in a future release
+of dopewars.</p>
+
+<h2><a id="metaserver">Private and public: the dopewars metaserver</a></h2>
+
+<p>By default, a server reports its status to the dopewars
+<a href="metaserver.html">metaserver</a>. It does this on startup and
+shutdown, and whenever players join or leave the game. In addition, you
+can force a report (under Unix systems) by sending the dopewars server
+process a SIGUSR1 signal. The server will "remind" the metaserver that it
+exists by ensuring that a report is sent at least once every 3 hours or so,
+regardless. A "status report" comprises contact details for the server,
+a count of the number of active players, and current high scores.</p>
+
+<p>The metaserver also has a web interface, which is used by dopewars clients to
+obtain the list of servers, and can also be viewed with a web browser
+<a href="http://dopewars.sourceforge.net/metaserver.php?getlist=2">here</a>.</p>
+
+<p>Whether your server connects to the metaserver can be configured with the
+<a href="configfile.html#MetaServerActive">MetaServer.Active</a> configuration
+file setting, or the <b>-s</b> and <b>-S</b> <a href="commandline.html">
+command line options</a>.</p>
+
+<p>N.B. Your machine may have trouble connecting with
+the metaserver in some circumstances, most notably if you are using an
+enforced proxy server or your DNS does not correctly resolve your IP address
+to your domain name. In such cases, you may be unable to connect to the
+metaserver, or it may register your server with an incorrect name. For
+information on getting round these difficulties, see the
+<a href="metaserver.html">metaserver</a> page.</p>
+
+<hr />
+<ul>
+<li><a href="index.html">Main index</a></li>
+</ul>
+<p>
+  Last update: <b>15-07-2002</b><br />
+  Valid <a href="http://validator.w3.org/check/referer">XHTML 1.1</a>
+</p>
+</body>
+</html>

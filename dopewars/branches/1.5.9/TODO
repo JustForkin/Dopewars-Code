@@ -1,0 +1,39 @@
+- Better use of screen space in curses client for large xterms etc.
+- Preserve chat messages at end of game (so they aren't lost when looking at
+  the high score list) ?
+- Price history graph and/or more sensible price fluctuations
+- Network installer for Win32 version, so that we don't have to distribute
+  megabytes of DLLs, sounds and translations if the user doesn't want them
+  (or already has them)
+- Option to let the cops search/fine you rather than shooting at them
+- Limit rate of server connections to combat DOS attacks / players trying
+  to get a good starting day?
+- Add support for reading/writing multiple configuration files to GUI client's
+  Options dialog
+- Startscreen
+- Track down server memory corruption bug!
+- Implement server option to buy more than one bitch at a time in the Pub.
+- Allow customisation of GtkTextView tag colours
+- Impose sensible limits on numbers in Options dialog (e.g. percentages)
+  (should also enforce this for config file / server admin)
+- Admin of running NT Service servers
+- GSS_API SOCKS support?
+- Fix problem with dialogs popping up while menus are open
+- Increase difficulty of escaping from another player - impose penalty on
+  running (lose drugs, free shot, destination revealed)
+- Alliances/cartels - several players share cash
+- Introduce minimum/maximum players options - AI players automatically
+  spawned/killed to "fill the gaps" when humans leave/enter
+- "Deal" option when meeting players?
+- Bribe/steal bitches when meeting players (difficulty inv. prop. to number of
+  bitches?)
+- Problems reported with display of large prices and health - "seems" to be
+  OK now... (i.e. I can't see anything wrong with it!)
+- Fix GTK+ modal dialog behaviour (mouse grabbing during fighting) - _seems_
+  to be OK...
+- Fix bug with players leaving the game during fights (first, must find it)
+- Metaserver keeps list of game types of each server
+Cannot reproduce... can you? (- Investigate deadlock during fighting if both
+                                players move to "deal")
+Cannot reproduce... can you? (- Investigate prompt for bitch on every turn
+                                after a spy is dispatched)
