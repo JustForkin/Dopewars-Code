@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>Internationalization</title>
+</head>
+
+<body>
+<h1>Internationalization</h1>
+
+<p>dopewars uses the <a href="http://www.gnu.org/manual/gettext/">GNU
+gettext</a> utilities for internationalization (i18n) support. This allows the
+software to be translated into the local language at runtime - run dopewars in
+the UK and it'll talk to you in English, but run it in Germany and it'll talk
+to you in German. This relies on translators to translate the program's output
+into each language beforehand, of course, and so native language speakers to
+carry out this task are always needed!</p>
+
+<ul>
+<li><a href="#running">Running dopewars with i18n support</a></li>
+<li><a href="#adding">Adding a new translation</a></li>
+<li><a href="#dopespec">dopewars specifics</a></li>
+<li><a href="#updating">Updating a translation for a new dopewars
+version</a></li>
+<li><a href="#current">Currently available translations</a></li>
+</ul>
+
+<h2><a id="running">Running dopewars with i18n support</a></h2>
+<p>i18n is only included in versions of dopewars later than 1.4.8. By default,
+"Native Language Support" is compiled in; binary installations should be
+already set up for i18n. When compiling dopewars from source code, the
+<tt>configure</tt> script should detect whether your system can support
+GNU gettext. If it can, but the gettext utilities themselves are not present,
+an included copy in the <tt>intl/</tt> subdirectory is used. To disable i18n,
+pass the <tt>--disable-nls</tt> option to the <tt>configure</tt> script.</p>
+
+<p>When you run your installed copy of dopewars, it should detect your "locale"
+automatically and talk to you in your native language. If this does not happen,
+the following are some possible explanations:-</p>
+<ul>
+<li>dopewars cannot find the locale-specific language file - by default, stored
+under /usr/local/share/locale/</li>
+<li>Your language is not yet supported - why not add it yourself?</li>
+<li>Your system does not have locale support.</li>
+<li>On a Windows system, you need to select the language from the relevant
+section of Control Panel (or set the LANG environment variable, below). i18n
+under Windows is only supported by version 1.5.3 and later.</li>
+<li>You haven't set an environment variable to specify your locale (usually
+this is done automatically). For example, if you're using the <tt>bash</tt>
+shell and want a German translation, the command "<tt>export LANG=de_DE</tt>"
+should ensure that dopewars (and all other i18n-aware programs launched from
+this shell) will use the German language.</li>
+</ul>
+
+<h2><a id="adding">Adding a new translation</a></h2>
+<p>Translation files are kept in the subdirectory <tt>po/</tt> of the dopewars
+source code distribution. They are named by
+<a href="http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_639.html">
+2-letter language codes</a> followed by the <tt>.po</tt> extension - for
+example, the German translation is stored in the file <tt>po/de.po</tt>.
+They are simple text files, consisting of lists of the original English string
+(labelled by "msgid") followed by the translated string (labelled by
+"msgstr").</p>
+
+<p>Adding a new translation is simply a matter of copying the reference file
+<tt>dopewars.pot</tt> to your language-specific <tt>.po</tt> file in the
+<tt>po/</tt> directory, and filling in the "msgstr" entries. Once this is done,
+edit the <tt>configure.in</tt> file in the top dopewars directory to add your
+language code to the <tt>ALL_LINGUAS</tt> variable. Then run <tt>autoconf</tt>
+to rebuild the <tt>configure</tt> script, before making and installing dopewars
+as usual. The new translation should now be available. Once this is complete,
+please <a href="mailto:benwebb@users.sf.net">send</a> the translation to
+be included in the next dopewars version.</p>
+
+<p>Please note that some strings are <b>format strings</b> containing the %
+character. These are used in the program code for substituting numbers and
+other pieces of text into the string - these substitutions are are performed
+using variables which are specified in the <b>same order</b> as the %
+characters in the format string. For example, the following format string
+substitutes in a string (%s) and an integer number (%d):-<br />
+<tt>"String '%s' has %d characters"</tt><br />
+The string and number are specified in order in the code. This is problematic
+if your translation changes the order - for example, a valid German translation
+of the string would be<br />
+<tt>"%d Zeichen lang ist die Zeichenkette '%s'"</tt><br />
+Now the number and string are specified in the wrong order, and this will
+probably crash the program on running! To fix this, use the special notation<br />
+<tt>"%2$d Zeichen lang ist die Zeichenkette '%1$s'"</tt><br />
+(i.e. replace <b>%x</b> with <b>%n$x</b> where <b>n</b> is the index that the
+format specifier "should" have, starting from 1.)</p>
+
+<h2><a id="dopespec">dopewars specifics</a></h2>
+<ul>
+<li>When questions are asked in the curses (text mode) client, the keys that
+you are allowed to press in reply are stored in a string. This should be
+translated to suitable keys in your language, in the <b>same</b> order as 
+the original - e.g. "<tt>YN</tt>" (for Yes/No) could be translated in German
+to "<tt>JN</tt>" (for Ja/Nein).<p /></li>
+
+<li>When a dopewars server asks a client a question, the valid replies are
+sent at the start of the message, followed by a "<tt>^</tt>" character. These
+replies define the dopewars protocol, and so should <b>not</b> be
+translated - they will prevent clients and servers from talking to each other
+properly. So for example, the string "<tt>YN^Would you like to visit %s?</tt>"
+should be translated as you wish, but with the "<tt>YN^</tt>" at the start
+left unchanged.<p /></li>
+
+<li>The <tt>%txx</tt> notation is used for "translated strings". This notation
+is exactly equivalent to the standard C "<tt>%s</tt>" notation for a string,
+and does essentially the same thing, except that the two-letter code which
+follows the <tt>%t</tt> is used to select an "alternative form" of the word
+- for example, your language may have different words for "bitch" depending
+on whether the word is the subject or the object of the sentence. You are
+free to translate <tt>%txx</tt> to use the most appropriate form of the word.
+If you wish to capitalise the first letter of the word (as used in English for
+titles, etc.) then use "<tt>%T</tt>" rather than "<tt>%t</tt>".<p />
+
+<p>Obviously dopewars cannot guess what your "alternative forms" are; you must
+specify them yourself. Essentially, when setting a string in a dopewars
+configuration file (or the defaults, which are set in dopewars.c) alternative
+forms can be added by alternating two-letter codes and alternative forms after
+the original word, separating them by _ (underline) symbols. For example,<br />
+<tt>Names.Bitch = "bitch_no_bitcho_ac_bitche"</tt><br />
+specifies two alternative forms for "bitch", identified by the "<tt>no</tt>"
+and "<tt>ac</tt>" codes. You can then use "bitcho" anywhere that "bitch" is
+normally used by translating the relevant string as "<tt>%tno</tt>" (and to
+get "bitche" use "<tt>%tac</tt>"). If you specify a two letter code
+in the translation that you haven't given an alternative form for, the
+default word ("bitch") will be used. In the original English, "<tt>%tde</tt>"
+is used for this purpose, but there is nothing special about the "<tt>de</tt>"
+code - you can use it yourself if you like, and you can use as many
+different two-letter codes as you want to.</p>
+
+<p>For a good working example of the "<tt>%tde</tt>" notation, see the
+Norwegian Nynorsk translation (<tt>nn.po</tt>).</p>
+
+<p>Additionally, prices in dopewars are automatically formatted into strings by
+means of the %P notation, and comments can be introduced into format strings
+by means of the %/.../ notation. Everything between the two / characters is
+not printed. This is used to "qualify" some strings for translation, and the
+%/.../ can be left out of the translated string if desired (the comment does
+not need to be translated).</p>
+</li>
+
+</ul>
+
+<h2><a id="updating">Updating a translation for a new dopewars
+version</a></h2>
+
+<p>New versions of dopewars will often change what is printed to the user, and
+so may may require changes to the translation. To update an existing
+translation, change into the <tt>po</tt> subdirectory of the dopewars
+source code, and do a "<tt>make dopewars.pot</tt>". This creates the
+<tt>dopewars.pot</tt> file, which lists the strings that need translating.
+Next, create a new translation file from your "old" translation file (we'll
+assume it's called <tt>de.po</tt>) and <tt>dopewars.pot</tt> with the
+<tt>msgmerge</tt> command:-<br />
+<tt>msgmerge -o newfile de.po dopewars.pot</tt><br />
+Examine this new file <tt>newfile</tt> for translations that need updating
+(a search for "fuzzy" should find most of them) and then overwrite your old
+translation with the new one:<br />
+<tt>mv newfile de.po</tt><br />
+Rebuild and reinstall dopewars, and the new translations should become
+available. Again, it is deeply appreciated if such updated files are
+contributed to the main dopewars distribution!</p>
+
+<h2><a id="current">Currently available translations</a></h2>
+
+<ul>
+<li>French (<tt>fr.po</tt>)
+   <ul>
+   <li>Maintained by: <a href="mailto:triton@madchat.org">leonard</a></li>
+   <li>Version required: <b>1.5.2</b> or later</li>
+   </ul>
+</li>
+
+<li>German (<tt>de.po</tt>)
+   <ul>
+   <li>Maintained by: <a href="mailto:eric_st@aon.at">Eric Steiner</a>,
+     <a href="mailto:tobi@radical-linux.de">Tobias Mathes</a></li>
+   <li>Version required: <b>1.5.0</b> or later</li>
+   </ul>
+</li>
+
+<li>Polish (<tt>pl.po</tt>)
+   <ul>
+   <li>Maintained by: <a href="mailto:jeszua@panda.bg.univ.gda.pl">Slawomir
+       Molenda</a></li>
+   <li>Version required: <b>1.5.0</b> or later</li>
+   </ul>
+</li>
+
+<li>Portuguese (Brazil) (<tt>pt_BR.po</tt>)
+   <ul>
+   <li>Maintained by: <a href="mailto:hugo@netdados.com.br">Hugo
+       Cisneiros</a>, <a href="brunoml@bol.com.br">Bruno Lopes</a></li>
+   <li>Version required: <b>1.5.0</b> or later</li>
+   </ul>
+</li>
+
+<li>Norwegian Nynorsk (<tt>nn.po</tt>)
+   <ul>
+   <li>Maintained by: <a href="mailto:aasmunds@student.matnat.uio.no">
+       &Aring;smund Skj&aelig;veland</a></li>
+   <li>Version required: <b>1.5.7</b> or later</li>
+   </ul>
+</li>
+
+<li>Spanish (<tt>es.po</tt> or <tt>es_ES.po</tt>)
+   <ul>
+   <li>Maintained by: <a href="mailto:quique@sindominio.net">Quique</a></li>
+   <li>Version required: <b>1.5.8</b> or later</li>
+   </ul>
+</li>
+</ul>
+
+<hr />
+<ul>
+<li><a href="index.html">Main index</a></li>
+</ul>
+<p>
+  Last update: <b>11-12-2003</b><br />
+  Valid <a href="http://validator.w3.org/check/referer">XHTML 1.1</a>
+</p>
+
+</body>
+</html>
