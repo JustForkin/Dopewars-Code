@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>dopewars and Microsoft Windows</title>
+</head>
+
+<body>
+<h1>dopewars and Microsoft Windows</h1>
+
+<p>dopewars now runs natively on Win32 systems (95, 98, NT, 2000). It runs by
+default as a dopewars client, using the familiar Windows interface. However,
+if you prefer the "original look" text mode interface, this is still
+available; just right click on a shortcut to dopewars, and add <tt>-t</tt> to
+the end of the command line. To run a dopewars server, add <tt>-s</tt>
+instead.</p>
+
+<p>Binaries can be obtained from the main
+<a href="http://dopewars.sourceforge.net/download.html">download site</a>, or
+dopewars will compile with the free
+<a href="http://sourceware.cygnus.com/cygwin/">Cygwin</a> tools under Win32.
+dopewars uses the <a href="http://www.gtk.org/">GLib</a> library, which can
+be obtained for Windows from <a href="http://www.gimp.org/~tml/gimp/win32/">
+http://www.gimp.org/~tml/gimp/win32/</a>. The installation procedure is the
+same as <a href="installation.html">that for Unix systems</a> - download the
+tarball, extract the files, change into the created directory, run the
+<tt><b>configure</b></tt> script, and then <b>make</b>. This builds a native
+Win32 binary, which does not need the Cygwin libraries to run. See the
+INSTALL file in the source code distribution (.tar.gz file) for further
+details.</p>
+
+<p>In virtually all respects, the Unix and Win32 versions of dopewars should be
+identical. Both will accept the same command line parameters and configuration
+options. However, since the standard Unix paths for the high score file and
+configuration files do not translate well to Windows, by default the program
+will look for both the high score file <b>dopewars.sco</b> in the current
+directory, and will read a global configuration file <b>dopewars-config.txt</b>
+from the directory in which the dopewars binary was installed, followed by
+a per-user configuration file of the same name in the working directory.</p>
+
+<hr />
+<ul>
+<li><a href="index.html">Main index</a></li>
+</ul>
+<p>
+  Last update: <b>19-10-2002</b><br />
+  Valid <a href="http://validator.w3.org/check/referer">XHTML 1.1</a>
+</p>
+</body>
+</html>
