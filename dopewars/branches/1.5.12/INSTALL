@@ -1,0 +1,335 @@
+PREREQUISITES
+=============
+
+dopewars _requires_ the GLib library for compilation, even when not using
+the GTK+ client. Other libraries may be required for additional features:-
+
+Unix/Linux:
+   - Get GLib from http://www.gtk.org/
+   - For the GTK+ client, GTK+ libraries are needed, also from
+     http://www.gtk.org/. To actually compile dopewars, you'll probably need
+     your distribution's "gtk-devel" package.
+   - For the curses client, curses, ncurses or libcurses_color libraries
+     and headers are required.
+
+Windows:
+   - Get Cygwin from http://www.cygwin.com/. It should be possible to build
+     dopewars with C compilers other than Cygwin, but this is not supported.
+     Make sure that when you install Cygwin you select the following packages
+     for installation:
+         pkgconfig gettext libiconv w32api mingw-runtime gcc make bash unzip
+   - If you want to build from CVS, you will also need the following:-
+         autoconf automake gettext-devel
+   - dopewars requires GLib for Win32, which in turn requires libintl and
+     libiconv. Links to the binary distributions of these can be found at
+     http://www.gimp.org/win32/downloads.html. (You can also build them from
+     the source code, but this is not described here.) The binary packages
+     that you will need are:
+         glib-2.4.7.zip
+         glib-dev-2.4.7.zip
+         libiconv-1.9.1.bin.woe32.zip
+         gettext-0.14.5.zip
+         gettext-dev-0.14.5.zip
+     Later versions of any of these packages should also work. Note that the
+     libintl and libiconv Cygwin packages will NOT suffice here.
+   - These packages need to be installed on your Cygwin system under /target,
+     so start a Cygwin shell, and execute something similar to the following:
+         mkdir -p /target
+         cd /target
+         unzip /glib-2.4.7.zip
+         unzip /glib-dev-2.4.7.zip
+         unzip /gettext-0.14.5.zip
+         unzip /gettext-dev-0.14.5.zip
+         unzip /libiconv-1.9.1.bin.woe32.zip
+   - In order for pkg-config to detect the installed packages, you need
+     to put their .pc files (in /target/lib/pkgconfig) in the pkgconfig
+     search path. One way of doing this is with the following command:
+         ln -s /target/lib/pkgconfig /lib/pkgconfig
+   - In order for the configure script to properly detect libintl, it needs to
+     be placed in the include path:
+         ln -s /target/include/libintl.h /usr/include/mingw
+   - Finally, in order for GLib applications such as dopewars to work, the
+     libintl, libiconv and libglib DLLs need to be in the Windows library
+     search path. You can either copy them into the dopewars directory, or
+     place them somewhere such as C:\WINNT\System32, either with Windows
+     Explorer or with a Cygwin command such as:
+         cd /target
+         cp bin/intl.dll bin/iconv.dll \
+            bin/libglib-2.0-0.dll /cygdrive/c/winnt/system32
+
+
+INSTALLATION
+============
+
+dopewars installation should require no more than the following:-
+
+	./configure
+	make
+	make install
+
+(To build a CVS version, you must have the automake and autoconf packages
+installed. Run ./autogen.sh instead of ./configure - this generates the
+Makefiles and configure script. You will also need the gettext package if
+you want to enable NLS support, in order to generate the necessary .po files.)
+
+The configure script checks to see if your system is a "normal" Unix or the
+Unix-under-Win32 "Cygwin" environment. On a Cygwin system, the default is to
+build a native Win32 binary with the Cygwin tools; this will then run without
+requiring the presence and performance penalty of the CYGWIN.DLL library. This
+test can be overridden (if, for example, you wanted to build the Unix version
+under Cygwin) with the --enable-nativewin32 option to configure e.g.
+
+to build the Win32 binary under Cygwin
+	./configure
+	(Cygwin should be automatically detected)
+or
+	./configure --enable-nativewin32
+
+to build the Unix version under Cygwin
+	./configure --disable-nativewin32
+
+For a smaller binary, you may wish to build a "stripped" binary by specifying
+the -s option in LDFLAGS. In a Bourne-compatible shell, this can be achieved
+with a command similar to the following:-
+	LDFLAGS="-s" ./configure
+
+The dopewars high score file is written as /usr/local/var/dopewars.sco on
+Unix systems or ./dopewars.sco on Win32 systems by default. On Unix systems,
+translations, documentation, sounds and graphics are installed in the
+locale, doc, dopewars and pixmaps directories respectively under
+/usr/local/share. (On Windows systems, these directories are under the
+current directory.) On Unix systems, you can move the score file with the
+--localstatedir flag to configure, and the other files with the --datadir
+flag. (On Win32 systems, the --localstatedir and --datadir flags are
+ignored.) The dopewars binary can also be moved from /usr/local/bin/dopewars
+with the --bindir flag. For example:-
+
+	./configure --bindir=/usr/bin --localstatedir=/var/lib/games
+will configure the system to write the dopewars binary as /usr/bin/dopewars
+and the high score as /var/lib/games/dopewars.sco
+
+Other options to ./configure include:-
+
+--enable-networking:
+	Compile dopewars with support for running as a server, and/or to
+connect to existing servers over a TCP/IP network. (Without networking,
+dopewars will only be useable in single-player mode.) If this option is not
+specified, the configure script will enable networking only if it believes
+your system has the necessary support functions (select and socket). You can
+also explicitly disable networking with --enable-networking=no or
+--disable-networking
+
+--enable-gui-client:
+	Compile a graphical dopewars client, using GTK+ on Unix systems and
+the standard libaries under Windows. If unspecified, this is enabled only
+if your system has the necessary libraries (e.g. GTK+) installed.
+
+--enable-curses-client:
+	Compile a text-mode client, using ncurses or similar on Unix systems
+and the standard libraries under Windows. If unspecified, this is enabled only
+if you have ncurses (or similar) installed.
+
+--enable-gui-server:
+	Use a (very basic) graphical interface to the dopewars server. If not
+specified, this is enabled under Windows and disabled under Unix (where a
+simple text-mode server is used instead).
+
+--enable-strict
+	If using gcc to compile dopewars (recommended) then this turns on
+extra warning messages (useful for debugging, etc.) Unfortunately a lot of
+these warnings can be safely ignored, so this is not the default.
+
+WIN32 INSTALLER
+===============
+
+In order to build the Win32 installer program for dopewars, place the
+libbzip2 source code (from http://sources.redhat.com/bzip2/) into
+win32/bzlib, and build it with
+
+    make -f Makefile.nocygwin
+
+Then you should be able to build setup.exe by simply executing "make" in
+the win32 directory.
+
+Basic Installation
+==================
+
+   These are generic installation instructions.
+
+   The `configure' shell script attempts to guess correct values for
+various system-dependent variables used during compilation.  It uses
+those values to create a `Makefile' in each directory of the package.
+It may also create one or more `.h' files containing system-dependent
+definitions.  Finally, it creates a shell script `config.status' that
+you can run in the future to recreate the current configuration, a file
+`config.cache' that saves the results of its tests to speed up
+reconfiguring, and a file `config.log' containing compiler output
+(useful mainly for debugging `configure').
+
+   If you need to do unusual things to compile the package, please try
+to figure out how `configure' could check whether to do them, and mail
+diffs or instructions to the address given in the `README' so they can
+be considered for the next release.  If at some point `config.cache'
+contains results you don't want to keep, you may remove or edit it.
+
+   The file `configure.in' is used to create `configure' by a program
+called `autoconf'.  You only need `configure.in' if you want to change
+it or regenerate `configure' using a newer version of `autoconf'.
+
+The simplest way to compile this package is:
+
+  1. `cd' to the directory containing the package's source code and type
+     `./configure' to configure the package for your system.  If you're
+     using `csh' on an old version of System V, you might need to type
+     `sh ./configure' instead to prevent `csh' from trying to execute
+     `configure' itself.
+
+     Running `configure' takes awhile.  While running, it prints some
+     messages telling which features it is checking for.
+
+  2. Type `make' to compile the package.
+
+  3. Optionally, type `make check' to run any self-tests that come with
+     the package.
+
+  4. Type `make install' to install the programs and any data files and
+     documentation.
+
+  5. You can remove the program binaries and object files from the
+     source code directory by typing `make clean'.  To also remove the
+     files that `configure' created (so you can compile the package for
+     a different kind of computer), type `make distclean'.  There is
+     also a `make maintainer-clean' target, but that is intended mainly
+     for the package's developers.  If you use it, you may have to get
+     all sorts of other programs in order to regenerate files that came
+     with the distribution.
+
+Compilers and Options
+=====================
+
+   Some systems require unusual options for compilation or linking that
+the `configure' script does not know about.  You can give `configure'
+initial values for variables by setting them in the environment.  Using
+a Bourne-compatible shell, you can do that on the command line like
+this:
+     CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure
+
+Or on systems that have the `env' program, you can do it like this:
+     env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
+
+Compiling For Multiple Architectures
+====================================
+
+   You can compile the package for more than one kind of computer at the
+same time, by placing the object files for each architecture in their
+own directory.  To do this, you must use a version of `make' that
+supports the `VPATH' variable, such as GNU `make'.  `cd' to the
+directory where you want the object files and executables to go and run
+the `configure' script.  `configure' automatically checks for the
+source code in the directory that `configure' is in and in `..'.
+
+   If you have to use a `make' that does not supports the `VPATH'
+variable, you have to compile the package for one architecture at a time
+in the source code directory.  After you have installed the package for
+one architecture, use `make distclean' before reconfiguring for another
+architecture.
+
+Installation Names
+==================
+
+   By default, `make install' will install the package's files in
+`/usr/local/bin', `/usr/local/man', etc.  You can specify an
+installation prefix other than `/usr/local' by giving `configure' the
+option `--prefix=PATH'.
+
+   You can specify separate installation prefixes for
+architecture-specific files and architecture-independent files.  If you
+give `configure' the option `--exec-prefix=PATH', the package will use
+PATH as the prefix for installing programs and libraries.
+Documentation and other data files will still use the regular prefix.
+
+   In addition, if you use an unusual directory layout you can give
+options like `--bindir=PATH' to specify different values for particular
+kinds of files.  Run `configure --help' for a list of the directories
+you can set and what kinds of files go in them.
+
+   If the package supports it, you can cause programs to be installed
+with an extra prefix or suffix on their names by giving `configure' the
+option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
+
+Optional Features
+=================
+
+   Some packages pay attention to `--enable-FEATURE' options to
+`configure', where FEATURE indicates an optional part of the package.
+They may also pay attention to `--with-PACKAGE' options, where PACKAGE
+is something like `gnu-as' or `x' (for the X Window System).  The
+`README' should mention any `--enable-' and `--with-' options that the
+package recognizes.
+
+   For packages that use the X Window System, `configure' can usually
+find the X include and library files automatically, but if it doesn't,
+you can use the `configure' options `--x-includes=DIR' and
+`--x-libraries=DIR' to specify their locations.
+
+Specifying the System Type
+==========================
+
+   There may be some features `configure' can not figure out
+automatically, but needs to determine by the type of host the package
+will run on.  Usually `configure' can figure that out, but if it prints
+a message saying it can not guess the host type, give it the
+`--host=TYPE' option.  TYPE can either be a short name for the system
+type, such as `sun4', or a canonical name with three fields:
+     CPU-COMPANY-SYSTEM
+
+See the file `config.sub' for the possible values of each field.  If
+`config.sub' isn't included in this package, then this package doesn't
+need to know the host type.
+
+   If you are building compiler tools for cross-compiling, you can also
+use the `--target=TYPE' option to select the type of system they will
+produce code for and the `--build=TYPE' option to select the type of
+system on which you are compiling the package.
+
+Sharing Defaults
+================
+
+   If you want to set default values for `configure' scripts to share,
+you can create a site shell script called `config.site' that gives
+default values for variables like `CC', `cache_file', and `prefix'.
+`configure' looks for `PREFIX/share/config.site' if it exists, then
+`PREFIX/etc/config.site' if it exists.  Or, you can set the
+`CONFIG_SITE' environment variable to the location of the site script.
+A warning: not all `configure' scripts look for a site script.
+
+Operation Controls
+==================
+
+   `configure' recognizes the following options to control how it
+operates.
+
+`--cache-file=FILE'
+     Use and save the results of the tests in FILE instead of
+     `./config.cache'.  Set FILE to `/dev/null' to disable caching, for
+     debugging `configure'.
+
+`--help'
+     Print a summary of the options to `configure', and exit.
+
+`--quiet'
+`--silent'
+`-q'
+     Do not print messages saying which checks are being made.  To
+     suppress all normal output, redirect it to `/dev/null' (any error
+     messages will still be shown).
+
+`--srcdir=DIR'
+     Look for the package's source code in directory DIR.  Usually
+     `configure' can determine that directory automatically.
+
+`--version'
+     Print the version of Autoconf used to generate the `configure'
+     script, and exit.
+
+`configure' also accepts some other, not widely useful, options.

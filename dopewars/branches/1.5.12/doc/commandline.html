@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>dopewars command line options</title>
+</head>
+
+<body>
+<h1>dopewars command line options</h1>
+
+<p>Once you have <a href="installation.html">installed</a> dopewars, you should
+be able to run the binary just by typing<br />
+<tt><b>dopewars</b></tt><br />
+(unless you have installed the binary in a directory which is not in your
+path, in which case precede it with the path). Run without any options,
+the dopewars binary runs as a dopewars client.</p>
+
+<p>Command line options can be used to configure common aspects of dopewars.
+More exhaustive configuration is possible by editing the dopewars
+<a href="configfile.html">configuration files</a>; note, however, that
+command line options can be used to override some of these settings (also see
+the <b>-g</b> option below).</p>
+
+<p>For a brief description of the command line options, specify the option
+<b>-h</b> with the command<br />
+<tt><b>dopewars -h</b></tt><br />
+A list of all command line options is presented below. Please note that
+most options have a "short" format (e.g. <b>-p</b>) and a "long" format
+(e.g. <b>--port</b>). The "long" form is only available on systems that
+have GNU getopt; this <b>excludes</b> the Windows version.</p>
+
+<dl>
+<dt><b>-b</b>, <b>--no-color</b>, <b>--no-colour</b></dt>
+<dd>"Black and white". This tells the dopewars client (if that is what
+you're running) not to use coloured text (by default, colour is used if the
+terminal and curses support it).</dd>
+
+<dt><a id="singleplayer"><b>-n</b>, <b>--single-player</b></a></dt>
+<dd>If running the client, run in single-player mode. Don't try to connect
+to any available dopewars servers.</dd>
+
+<dt><a id="antique"><b>-a</b>, <b>--antique</b></a></dt>
+<dd>Puts the client into "antique" mode; dopewars is derived from the
+earlier game for MS-DOS of the same name, which in turn was based on
+"Drug Wars" by John E. Dell. "Antique" mode aims to follow the behaviour
+of the MS-DOS dopewars closely, and consequently this entails single-player
+mode also.</dd>
+
+<dt><a id="hiscore"><b>-f <i>file</i></b>, <b>--scorefile=<i>file</i></b>
+</a></dt>
+<dd>Specifies the path and name of the file used to store the dopewars
+high scores in; this can alternatively be specified in the configuration file
+with the <a href="configfile.html#HiScoreFile">HiScoreFile=<i>file</i></a>
+option. (N.B. This option cannot be used to get dopewars to open a high
+score file with privilege when running setuid/setgid; all privileges are
+dropped by this point for security.)</dd>
+
+<dt><a id="server"><b>-o <i>addr</i></b>, <b>--hostname=<i>addr</i></b>
+</a></dt>
+<dd>Gives the name of the machine running a dopewars server, in human
+readable (e.g. "nowhere.com") or dotted quad (e.g. 127.0.0.1) form. When the
+client is started, if not in single-player mode, it automatically attempts to
+connect to this server for a multiplayer game. This can also be specified with
+the <a href="configfile.html#Server">Server=<i>addr</i></a> configuration file
+option.</dd>
+
+<dt><a id="port"><b>-p <i>port</i></b>, <b>--port=<i>port</i></b></a></dt>
+<dd>Specifies the numeric port number which the server uses. This is usually
+7902, but some servers may use other port numbers to avoid conflicts with
+other services running on the machine. If you are running the dopewars client,
+it will search for a server on this port; if you are running the server, it
+will bind to this port and wait for connections from clients (the clients
+must also be instructed to use this port, of course). This is equivalent to
+setting the port number with the
+<a href="configfile.html#Port">Port=<i>port</i></a> configuration file
+option.</dd>
+
+<dt><b>-s</b>, <b>--public-server</b></dt>
+<dd>Runs the <a href="server.html">dopewars server</a>. This mediates
+multiplayer games of dopewars, and keeps track of high scores. Any player
+wishing to join the game hosted
+by this server must connect to your machine using the dopewars client and the
+port number which you have chosen, and can then interact with other players
+who have done the same thing. By default, a dopewars server will report its
+status to the <a href="metaserver.html">metaserver</a>, unless it is set
+otherwise in the <a href="configfile.html#MetaServerActive">configuration
+file</a>.</dd>
+
+<dt><a id="privateserver"><b>-S</b>, <b>--private-server</b></a></dt>
+<dd>Also runs a dopewars server, but in this case <b>does not</b> report its
+status to the metaserver. This does not stop clients from connecting to your
+server, of course (unless it is behind a firewall, or the
+<a href="configfile.html#MaxClients">maximum number of clients</a> is exceeded),
+but it makes it harder to find. The connection to the
+<a href="metaserver.html">metaserver</a> can also be disabled by adding
+<a href="configfile.html#MetaServerActive">MetaServer.Active=FALSE</a> to the
+configuration files.</dd>
+
+<dt><b>-A</b>, <b>--admin</b></dt>
+<dd>Connects to a dopewars server running on this machine, and allows
+<a href="servercommands.html">server commands</a> to be issued. Only the user
+that originally started the server (or the superuser) is permitted to do
+this. Only supported for the text-mode server on Unix systems.</dd>
+
+<dt><b>-g <i>file</i></b>, <b>--config-file=<i>file</i></b></dt>
+<dd>Instructs dopewars to read setup information from the
+<a href="configfile.html">configuration file</a> named by <b><i>file</i></b>.
+This file is read immediately - i.e. at the point at which the -g option is
+encountered - and so these settings will override any set in the default
+configuration files or by previous command line options. Command line options
+occurring <b>after</b> the -g option, or for that matter further -g options,
+that change these same settings, will then override them.</dd>
+
+<dt><b>-r <i>file</i></b>, <b>--pidfile=<i>file</i></b></dt>
+<dd>Maintains a pid file with the specified name while the server is running.
+The file is a one-line text file, containing the process ID of the dopewars
+server process, and is deleted when the server quits.</dd>
+
+<dt><a id="computer"><b>-c</b>, <b>--ai-player</b></a></dt>
+<dd>Runs a computerised player. This will connect to the specifed dopewars
+server and join in the multiplayer game going on there. When the player
+finishes the game (or is eliminated by the other players or the server) the
+program finishes.</dd>
+
+<dt><a id="gui-client"><b>-w</b>, <b>--windowed-client</b></a></dt>
+<dd>If running a dopewars client, then this forces the use of a graphical
+user interface. Under Microsoft Windows, this is an "ordinary" window, while
+under Unix, this uses GTK+. If a suitable environment is not present (e.g.
+the binary was compiled without graphical support, or - in the case of GTK+ -
+you are not running X) then dopewars will quit with an error. By default,
+if neither -w or -t are specified, then a graphical user interface will be
+used where available, falling back to a text-mode client in case of error.</dd>
+
+<dt><a id="text-client"><b>-t</b>, <b>--text-client</b></a></dt>
+<dd>When running a dopewars client, forces the use of a text-mode (curses
+or console mode) interface, even if graphics are available.</dd>
+
+<dt><b>-P <i>name</i></b>, <b>--player=<i>name</i></b></dt>
+<dd>Sets the default player name.</dd>
+
+<dt><b>-C <i>file</i></b>, <b>--convert=<i>file</i></b></dt>
+<dd>Converts a high score file from an older version of dopewars to the format
+used by the current version. The old high score file is replaced with a new
+file, and a backup copy of the old file is made. This conversion process is
+necessary since older versions of dopewars did not identify the high score
+files properly, so they cannot be automatically converted. (Such automatic
+conversion would also pose a security risk if the dopewars binary is running
+setgid.)</dd>
+
+<dt><b>-u <i>name</i></b>, <b>--plugin=<i>name</i></b></dt>
+<dd>Uses the named plugin for sound output. Valid options are "none" (for
+no sound) plus any name registered by plugins found on your system. (These
+are currently "winmm" for the Windows multimedia system plugin, and "esd"
+and "sdl" for Unix plugins using the ESound and SDL libraries.) If no such
+option is given, the first valid sound plugin to be found is used.</dd>
+
+<dt><b>-h</b>, <b>--help</b></dt>
+<dd>Displays a brief description of the available command line options, and
+contact details.</dd>
+
+<dt><b>-v</b>, <b>--version</b></dt>
+<dd>Displays the current dopewars version number, and then exits.</dd>
+
+</dl>
+
+<hr />
+<ul>
+<li><a href="index.html">Main index</a></li>
+</ul>
+<p>
+  Last update: <b>02-06-2003</b><br />
+  Valid <a href="http://validator.w3.org/check/referer">XHTML 1.1</a>
+</p>
+</body>
+</html>

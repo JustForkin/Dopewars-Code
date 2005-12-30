@@ -1,0 +1,16 @@
+#include <windows.h>
+
+1 24 "dopewars.manifest"
+
+mainicon ICON pill.ico
+
+gtkdialog DIALOG 40, 40, 40, 40
+STYLE WS_POPUP | WS_CAPTION | WS_THICKFRAME | DS_MODALFRAME | WS_SYSMENU
+CAPTION ""
+BEGIN
+END
+
+tabpage DIALOG 40, 40, 40, 40
+STYLE DS_CONTROL | WS_CHILD | DS_3DLOOK | WS_VISIBLE
+BEGIN
+END
